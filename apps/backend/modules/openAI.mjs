@@ -1,4 +1,4 @@
-import { ChatOpenAI } from "@langchain/openai";
+import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
 import { ChatPromptTemplate } from "@langchain/core/prompts";
 import { StructuredOutputParser } from "langchain/output_parsers";
 import { z } from "zod";
@@ -21,10 +21,11 @@ const prompt = ChatPromptTemplate.fromMessages([
   ["human", "{question}"],
 ]);
 
-const model = new ChatOpenAI({
-  openAIApiKey: process.env.OPENAI_API_KEY || "-",
-  modelName: process.env.OPENAI_MODEL || "davinci",
+const model = new ChatGoogleGenerativeAI({
+  apiKey: process.env.GOOGLE_API_KEY || "-",
+  model: process.env.GEMINI_MODEL || "gemini-pro",
   temperature: 0.2,
+  maxOutputTokens: 2048,
 });
 
 const parser = StructuredOutputParser.fromZodSchema(
@@ -40,7 +41,7 @@ const parser = StructuredOutputParser.fromZodSchema(
         animation: z
           .string()
           .describe(
-            `Animation to be used by the AI. Select from: Idle, TalkingOne, TalkingThree, SadIdle, 
+            `Animation to be used by the AI. Select from: Idle, TalkingOne, TalkingThree, SadIdle, \
             Defeated, Angry, Surprised, DismissingGesture, and ThoughtfulHeadShake.`
           ),
       })
